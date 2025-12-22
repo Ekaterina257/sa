@@ -5,6 +5,8 @@ import { isIpValid } from '../utils/isIpValid'
 import { getNetworkAddress } from '../utils/getNetworkAddress'
 import { getAddressesCount } from '../utils/getAddressesCount'
 
+import { UiField, UiInput, UiSelect, UiButton } from 'subnet-ui-katya'
+
 const ip = ref('')
 const mask = ref('255.255.255.255')
 const options = subnetMasks
@@ -16,17 +18,27 @@ function showResult() {
 </script>
 
 <template>
-   <div class="container">
-   <h1> Калькулятор подсетей </h1>
-    <form @submit.prevent="showResult" class="form">
-      <input v-model="ip" class="h" placeholder="Введите IP-адрес" />
-      <select v-model="mask" class="g">
-        <option v-for="option in options" :key="option" :value="option">
-          {{ option }}
-        </option>
-      </select>
-      <button type="submit" :disabled="!isIpValid(ip)" class="b">Рассчитать</button>
-    </form>
+  <div class="container">
+    <h1>Калькулятор подсетей</h1>
+
+    <div class="form">
+      <UiField label="IP-адрес">
+        <UiInput v-model="ip" placeholder="Введите IP-адрес" class="field" />
+      </UiField>
+
+      <UiField label="Маска подсети">
+        <UiSelect v-model="mask" :options="options" class="field" />
+      </UiField>
+
+      <UiButton
+        type="submit"
+        :is-disabled="!isIpValid(ip)"
+        layout="primary"
+        @click="showResult"
+      >
+        Рассчитать
+      </UiButton>
+    </div>
 
     <div v-if="isShowResult && isIpValid(ip)" class="result">
       <div>IP: <strong>{{ ip }}</strong></div>
@@ -51,64 +63,29 @@ function showResult() {
 
 .form {
   display: flex;
-  gap: 12px;
-  padding: 20px;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
   background: var(--color-background);
   border-radius: 16px;
-  align-items: center;
-  flex-wrap: wrap;
-  max-width: 600px;
+  max-width: 400px;
   width: 100%;
   border: 1px solid var(--color-border);
 }
 
-.h,
-.g {
-  border-radius: 12px;
-  padding: 12px 16px;
-  font-size: 16px;
-  outline: none;
-  border: 1px solid var(--color-border);
-  flex: 1;
-  min-width: 140px;
-  background: var(--color-surface);
-}
-
-.h:focus,
-.g:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary);
-}
-
-.b {
-  background: linear-gradient(var(--color-primary), var(--color-primary-light));
-  color: var(--color-text);
-  font-weight: 600;
-  font-size: 16px;
-  border: none;
-  border-radius: 12px;
-  padding: 12px 24px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.b:hover {
-  background: linear-gradient(var(--color-primary-light), var(--color-primary));
-}
-
-.b:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.field {
+  width: 100% ;
+  box-sizing: border-box ;
 }
 
 .result {
-  font-size: 20px;
+  font-size: 18px;
   margin-top: 32px;
   padding: 24px;
   background: var(--color-background);
   border-radius: 16px;
   border: 1px solid var(--color-border);
-  max-width: 600px;
+  max-width: 400px;
   width: 100%;
 }
 </style>
